@@ -1,21 +1,23 @@
 import { FaFilter, FaHeart, FaShoppingCart, FaUser } from "react-icons/fa";
 
-export default function Navbar() {
+export default function Navbar({ isLoggedIn }) {
   return (
     <div className="w-full shadow-md">
       {/* Top Navbar */}
       <div className="bg-black px-4 py-2 flex justify-between items-center">
         {/* Logo */}
-        <div className="text-2xl font-bold text-white cursor-pointer"  onClick={() => window.location.reload()}>Thrifty</div>
+        <div className="text-2xl font-bold text-white cursor-pointer" onClick={() => window.location.reload()}>
+          Thrifty
+        </div>
 
         {/* Menu Links */}
         <div className="hidden md:flex space-x-10 gap-3 font-medium text-white">
-             <a href="#" className="hover:text-purple-600">Men</a> 
-             <a href="#" className="hover:text-purple-600">Women</a> 
-             <a href="#" className="hover:text-purple-600">Kids</a> 
-             <a href="#" className="hover:text-purple-600">Sale</a> 
-             <a href="#" className="hover:text-purple-600">Trending</a> 
-             </div>
+          <a href="#" className="hover:text-purple-600">Men</a>
+          <a href="#" className="hover:text-purple-600">Women</a>
+          <a href="#" className="hover:text-purple-600">Kids</a>
+          <a href="#" className="hover:text-purple-600">Sale</a>
+          <a href="#" className="hover:text-purple-600">Trending</a>
+        </div>
 
         {/* Search Bar */}
         <div className="hidden md:block w-1/5">
@@ -35,16 +37,25 @@ export default function Navbar() {
       </div>
 
       {/* Bottom Navbar */}
-      <div className=" text-black px-4 py-2 flex gap-10 text-sm font-medium">
+      <div className="text-black px-4 py-2 flex gap-10 text-sm font-medium items-center">
         <div className="flex items-center gap-1">
           <FaFilter />
-        
         </div>
-        <a href="#"  className="hover:text-purple-600">Browse</a>
-        <a href="#"  className="hover:text-purple-600">Rent</a>
-        <a href="#"  className="hover:text-purple-600">Sell</a>
-        <a href="#"  className="hover:text-purple-600">Buy</a>
-        <a href="#"  className="hover:text-purple-600">Donate</a>
+        <a href="#" className="hover:text-purple-600">Browse</a>
+        <a href="#" className="hover:text-purple-600">Rent</a>
+        <a href="#" className="hover:text-purple-600">Sell</a>
+        <a href="#" className="hover:text-purple-600">Buy</a>
+        <a href="#" className="hover:text-purple-600">Donate</a>
+
+        {/* Conditionally show Sign Up button if not logged in */}
+        {!isLoggedIn && (
+          <button
+            className="ml-auto bg-purple-600 text-white px-4 py-1.5 rounded-md hover:bg-purple-700 transition"
+            onClick={() => (window.location.href = "/sign-in")}
+          >
+            Sign Up
+          </button>
+        )}
       </div>
     </div>
   );

@@ -1,19 +1,37 @@
-import React from 'react';
-import Footer from './components/Footer/footer';
-import Hero from './components/Hero/hero';
-import Navbar from './components/Navbar/navbar';
+// App.jsx
+import React from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
+import Landing from './pages/Public/landing';
+import LoginPage from "./pages/Public/login";
+import RegistrationPage from "./pages/Public/registration";
 
+const queryClient = new QueryClient();
 
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Landing />,
+  },
+  {
+    path: "/sign-in",
+    element: <LoginPage />,
+  },
+  {
+    path: "/sign-up",
+    element: <RegistrationPage />,
+  },
+]);
 
-const App = () => {
+function App() {
   return (
-    <div>
-      <Navbar />
-      <Hero />
-      <Footer/>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <ToastContainer position="top-right" autoClose={2000} />
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   );
-};
+}
 
 export default App;
