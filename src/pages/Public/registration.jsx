@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   FaEnvelope,
+  FaEye,
+  FaEyeSlash,
+  FaLocationArrow,
   FaLock,
   FaPhone,
   FaUser,
-  FaEye,
-  FaEyeSlash,
 } from "react-icons/fa";
 import RegistrationImage from "../../assets/Signin/register.jpg";
 import Navbar from "../../components/Navbar/navbar";
+import { useRegister } from "../Public/query";
 
 const RegistrationPage = () => {
   const [formData, setFormData] = useState({
@@ -16,11 +18,17 @@ const RegistrationPage = () => {
     email: "",
     phone: "",
     password: "",
+    username: "",
+    address: "",
     confirmPassword: "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const { mutate: registerUser, isLoading } = useRegister();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,18 +37,39 @@ const RegistrationPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setSuccessMessage("");
+    setErrorMessage("");
+
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
+      setErrorMessage("Passwords do not match!");
       return;
     }
-    console.log("Register data:", formData);
-    // Submit logic here
+
+    const userData = {
+      fullname: formData.fullName,
+      email: formData.email,
+      image: "", // You can later add image upload
+      phoneNo: formData.phone,
+      username: formData.username,
+      address: formData.address,
+      password: formData.password,
+    };
+
+    registerUser(userData, {
+      onSuccess: () => {
+        setSuccessMessage("Registration successful! Redirecting to sign-in...");
+      },
+      onError: (err) => {
+        const msg =
+          err?.response?.data?.message || "Registration failed. Please try again.";
+        setErrorMessage(msg);
+      },
+    });
   };
 
   return (
     <>
       <Navbar />
-
       <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 pt-8">
         <div className="max-w-6xl w-full bg-white rounded-lg shadow-lg overflow-hidden flex flex-col lg:flex-row">
           {/* Left Image */}
@@ -58,126 +87,99 @@ const RegistrationPage = () => {
               Create Account
             </h2>
 
+            {/* Success / Error message */}
+            {successMessage && (
+              <p className="text-green-600 text-center mb-4 font-medium">
+                {successMessage}
+              </p>
+            )}
+            {errorMessage && (
+              <p className="text-red-600 text-center mb-4 font-medium">
+                {errorMessage}
+              </p>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Full Name */}
-              <div>
-                <label htmlFor="fullName" className="block mb-1 font-medium text-gray-700">
-                  Full Name
-                </label>
-                <div className="relative">
-                  <FaUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                  <input
-                    type="text"
-                    name="fullName"
-                    id="fullName"
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    required
-                    placeholder="Enter your full name"
-                    className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400"
-                  />
-                </div>
-              </div>
+              <InputField
+                id="fullName"
+                name="fullName"
+                icon={<FaUser />}
+                placeholder="Enter your full name"
+                value={formData.fullName}
+                onChange={handleChange}
+              />
 
               {/* Email */}
-              <div>
-                <label htmlFor="email" className="block mb-1 font-medium text-gray-700">
-                  Email
-                </label>
-                <div className="relative">
-                  <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                  <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    placeholder="Enter your email"
-                    className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400"
-                  />
-                </div>
-              </div>
+              <InputField
+                id="email"
+                name="email"
+                type="email"
+                icon={<FaEnvelope />}
+                placeholder="Enter your email"
+                value={formData.email}
+                onChange={handleChange}
+              />
 
-              {/* Phone Number */}
-              <div>
-                <label htmlFor="phone" className="block mb-1 font-medium text-gray-700">
-                  Phone Number
-                </label>
-                <div className="relative">
-                  <FaPhone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                  <input
-                    type="tel"
-                    name="phone"
-                    id="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    required
-                    placeholder="Enter your phone number"
-                    className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400"
-                  />
-                </div>
-              </div>
+              {/* Username */}
+              <InputField
+                id="username"
+                name="username"
+                icon={<FaUser />}
+                placeholder="Choose a username"
+                value={formData.username}
+                onChange={handleChange}
+              />
+
+              {/* Address */}
+              <InputField
+                id="address"
+                name="address"
+                icon={<FaLocationArrow />}
+                placeholder="Enter your address"
+                value={formData.address}
+                onChange={handleChange}
+              />
+
+              {/* Phone */}
+              <InputField
+                id="phone"
+                name="phone"
+                type="tel"
+                icon={<FaPhone />}
+                placeholder="Enter your phone number"
+                value={formData.phone}
+                onChange={handleChange}
+              />
 
               {/* Password */}
-              <div>
-                <label htmlFor="password" className="block mb-1 font-medium text-gray-700">
-                  Password
-                </label>
-                <div className="relative">
-                  <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    id="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                    placeholder="Enter your password"
-                    className="w-full pl-10 pr-10 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 focus:outline-none"
-                  >
-                    {showPassword ? <FaEyeSlash /> : <FaEye />}
-                  </button>
-                </div>
-              </div>
+              <PasswordField
+                id="password"
+                name="password"
+                show={showPassword}
+                setShow={setShowPassword}
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Enter your password"
+              />
 
               {/* Confirm Password */}
-              <div>
-                <label htmlFor="confirmPassword" className="block mb-1 font-medium text-gray-700">
-                  Confirm Password
-                </label>
-                <div className="relative">
-                  <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                  <input
-                    type={showConfirmPassword ? "text" : "password"}
-                    name="confirmPassword"
-                    id="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    required
-                    placeholder="Confirm your password"
-                    className="w-full pl-10 pr-10 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 focus:outline-none"
-                  >
-                    {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-                  </button>
-                </div>
-              </div>
+              <PasswordField
+                id="confirmPassword"
+                name="confirmPassword"
+                show={showConfirmPassword}
+                setShow={setShowConfirmPassword}
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="Confirm your password"
+              />
 
               <button
                 type="submit"
+                disabled={isLoading}
                 className="w-full bg-purple-600 text-white py-3 rounded-md hover:bg-purple-700 transition font-semibold"
               >
-                Register
+                {isLoading ? "Registering..." : "Register"}
               </button>
             </form>
 
@@ -195,3 +197,52 @@ const RegistrationPage = () => {
 };
 
 export default RegistrationPage;
+
+const InputField = ({ id, name, icon, placeholder, value, onChange, type = "text" }) => (
+  <div>
+    <label htmlFor={id} className="block mb-1 font-medium text-gray-700">
+      {id.charAt(0).toUpperCase() + id.slice(1)}
+    </label>
+    <div className="relative">
+      <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">{icon}</div>
+      <input
+        type={type}
+        name={name}
+        id={id}
+        value={value}
+        onChange={onChange}
+        required
+        placeholder={placeholder}
+        className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400"
+      />
+    </div>
+  </div>
+);
+
+const PasswordField = ({ id, name, show, setShow, value, onChange, placeholder }) => (
+  <div>
+    <label htmlFor={id} className="block mb-1 font-medium text-gray-700">
+      {id === "confirmPassword" ? "Confirm Password" : "Password"}
+    </label>
+    <div className="relative">
+      <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+      <input
+        type={show ? "text" : "password"}
+        name={name}
+        id={id}
+        value={value}
+        onChange={onChange}
+        required
+        placeholder={placeholder}
+        className="w-full pl-10 pr-10 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400"
+      />
+      <button
+        type="button"
+        onClick={() => setShow(!show)}
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 focus:outline-none"
+      >
+        {show ? <FaEyeSlash /> : <FaEye />}
+      </button>
+    </div>
+  </div>
+);
