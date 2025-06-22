@@ -1,10 +1,19 @@
 // App.jsx
-import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
-import Landing from './pages/Public/landing';
+import Dashboard from './pages/Public/dashboard/dashboard';
+import Account from "./pages/Public/account";
+import AddProduct from "./pages/Public/items/add_products";
+import MyProduct from "./pages/Public/items/myproduct";
+import Landing from './pages/Public/dashboard/landing';
+import Rent from "./pages/Public/items/rent";
+import Buy from "./pages/Public/items/buy";
+import Sell from "./pages/Public/items/sell";
+import Order from "./pages/Public/orders/order";
+import Cart from "./pages/Public/orders/cart";
+import Checkout from "./pages/Public/orders/checkoutform";
 import LoginPage from "./pages/Public/login";
 import RegistrationPage from "./pages/Public/registration";
 
@@ -16,8 +25,49 @@ const router = createBrowserRouter([
     element: <Landing />,
   },
   {
+    path: "/dashboard",
+    element:<Dashboard/>,
+  },
+  {
+    path: "/rent",
+    element:<Rent/>,
+  },
+  {
+    path: "/account",
+    element: <Account />,
+  },
+  {
+    path: "/add-product",
+    element: <AddProduct />,
+  },
+  {
+    path: "/my-product",
+    element: <MyProduct />,
+  },
+  {
     path: "/sign-in",
     element: <LoginPage />,
+  },
+  {
+    path: "/buy",
+    element: <Buy />,
+  },
+  {
+    path: "/sell",
+    element: <Sell />,
+  },
+
+   {
+    path: "/order",
+    element: <Order />,
+  },
+   {
+    path: "/cart",
+    element: <Cart />,
+  },
+  {
+    path: "/checkout",
+    element: <Checkout />,
   },
   {
     path: "/sign-up",

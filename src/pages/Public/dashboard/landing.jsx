@@ -1,8 +1,9 @@
-import React from "react";
-import Footer from "../../components/Footer/footer";
-import Hero from "../../components/Hero/hero";
-import Navbar from "../../components/Navbar/navbar";
-import ProductCard from "../../components/ProductCard/product";
+import Footer from "../../../components/Footer/footer";
+import Hero from "../../../components/Hero/hero";
+import Navbar1 from "../../../components/Navbar/navbar1";
+import ProductCard from "../../../components/ProductCard/product";
+
+
 // Example product data (can be fetched from an API later)
 const products = [
   {
@@ -34,7 +35,7 @@ const products = [
 const Landing = () => {
   return (
     <>
-      <Navbar />
+      <Navbar1/>
       <Hero />
 
       <section className="py-10 bg-gray-50">

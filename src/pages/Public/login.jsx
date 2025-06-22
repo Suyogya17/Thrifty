@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useLogin } from "../Public/query";
+import { useEffect, useState } from "react";
 import {
   FaEnvelope,
   FaEye,
@@ -9,12 +8,14 @@ import {
   FaInstagram,
   FaLock,
 } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Image1 from "../../assets/Signin/signin1.jpg";
 import Image2 from "../../assets/Signin/signin2.jpg";
 import Image3 from "../../assets/Signin/signin3.jpg";
 import Navbar from "../../components/Navbar/navbar";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { useLogin } from "../Public/query";
 
 const images = [Image1, Image2, Image3];
 
@@ -25,6 +26,7 @@ const LoginPage = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
 
   const { mutate: loginUser, isLoading } = useLogin();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -43,11 +45,20 @@ const LoginPage = () => {
 
     loginUser(formData, {
       onSuccess: (data) => {
+        console.log("Login response data:", data); // ✅ Debug
+
+        localStorage.setItem("token", data.data.token);
+        localStorage.setItem("id", data.data.cred._id); // ✅ Correct way
+
         toast.success("Login successful!");
+
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1000);
       },
       onError: (err) => {
         const msg =
-          err?.response?.data?.message || " Login failed. Please try again.";
+          err?.response?.data?.message || "Login failed. Please try again.";
         toast.error(msg);
       },
     });
@@ -59,7 +70,7 @@ const LoginPage = () => {
       <ToastContainer position="top-center" autoClose={3000} />
 
       <div className="flex flex-col lg:flex-row items-center justify-center max-w-6xl mx-auto mt-10 p-10 shadow-lg bg-white rounded-xl">
-        {/* Image + Heading Section */}
+        {/* Image Section */}
         <div className="w-full lg:w-1/2 flex flex-col items-center text-center p-4">
           <h2 className="text-3xl font-bold text-purple-600 mb-4">NEW TREND</h2>
           <div className="relative w-full max-w-md h-96 overflow-hidden rounded-md shadow-md bg-gray-200">
@@ -122,7 +133,6 @@ const LoginPage = () => {
               </div>
             </div>
 
-            {/* Remember Me */}
             <div className="flex items-center justify-between">
               <label className="flex items-center">
                 <input
@@ -143,23 +153,6 @@ const LoginPage = () => {
               {isLoading ? "Signing In..." : "Sign In"}
             </button>
           </form>
-
-          {/* Social icons */}
-          <div className="flex justify-center mt-6 space-x-6 text-2xl">
-            <FaGoogle className="cursor-pointer hover:text-red-500" />
-            <FaFacebookF className="cursor-pointer hover:text-blue-600" />
-            <FaInstagram className="cursor-pointer hover:text-pink-500" />
-          </div>
-
-          <p className="mt-6 text-center text-sm text-gray-700">
-            Don&apos;t have an account?{" "}
-            <a
-              href="/sign-up"
-              className="text-red-600 hover:underline font-semibold"
-            >
-              Sign Up
-            </a>
-          </p>
         </div>
       </div>
     </div>
