@@ -1,9 +1,20 @@
 // components/Navbar/navbar.jsx
 import { FaFilter, FaHeart, FaShoppingCart, FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Navbar({ isLoggedIn }) {
   const navigate = useNavigate();
+
+  const handleProtectedRoute = (path) => {
+    if (!isLoggedIn) {
+      toast.info("Please log in to continue");
+      navigate("/sign-in");
+    } else {
+      navigate(path);
+    }
+  };
 
   return (
     <div className="w-full shadow-md">
@@ -16,13 +27,14 @@ export default function Navbar({ isLoggedIn }) {
         >
           THRIFTY
         </div>
-         {/* Menu Links */}
+
+        {/* Menu Links */}
         <div className="hidden md:flex space-x-10 gap-3 font-medium text-white">
-          <a href="#" className="hover:text-purple-600">Men</a>
-          <a href="#" className="hover:text-purple-600">Women</a>
-          <a href="#" className="hover:text-purple-600">Kids</a>
-          <a href="#" className="hover:text-purple-600">Sale</a>
-          <a href="#" className="hover:text-purple-600">Trending</a>
+          <span className="hover:text-purple-600 cursor-pointer">Men</span>
+          <span className="hover:text-purple-600 cursor-pointer">Women</span>
+          <span className="hover:text-purple-600 cursor-pointer">Kids</span>
+          <span className="hover:text-purple-600 cursor-pointer">Sale</span>
+          <span className="hover:text-purple-600 cursor-pointer">Trending</span>
         </div>
 
         {/* Search Bar */}
@@ -36,8 +48,14 @@ export default function Navbar({ isLoggedIn }) {
 
         {/* Icons */}
         <div className="flex gap-4 text-white text-lg">
-          <FaShoppingCart className="cursor-pointer hover:text-purple-300" onClick={() => navigate("/cart")} />
-          <FaHeart className="cursor-pointer hover:text-purple-300" onClick={() => navigate("/wishlist")} />
+          <FaShoppingCart
+            className="cursor-pointer hover:text-purple-300"
+            onClick={() => navigate("/cart")}
+          />
+          <FaHeart
+            className="cursor-pointer hover:text-purple-300"
+            onClick={() => navigate("/wishlist")}
+          />
           <FaUser
             className="cursor-pointer hover:text-purple-300"
             onClick={() => navigate(isLoggedIn ? "/profile" : "/sign-in")}
@@ -52,13 +70,31 @@ export default function Navbar({ isLoggedIn }) {
           <span>Filter</span>
         </div>
 
-        <a href="#" className="hover:text-purple-600">Browse</a>
-        <a href="/rent" className="hover:text-purple-600">Rent</a>
-        <a href="/sell" className="hover:text-purple-600">Sell</a>
-        <a href="/buy" className="hover:text-purple-600">Buy</a>
-        <a href="/donate" className="hover:text-purple-600">Donate</a>
+        <span
+          onClick={() => handleProtectedRoute("/rent")}
+          className="hover:text-purple-600 cursor-pointer"
+        >
+          Rent
+        </span>
+        <span
+          onClick={() => handleProtectedRoute("/sell")}
+          className="hover:text-purple-600 cursor-pointer"
+        >
+          Sell
+        </span>
+        <span
+          onClick={() => handleProtectedRoute("/buy")}
+          className="hover:text-purple-600 cursor-pointer"
+        >
+          Buy
+        </span>
+        <span
+          onClick={() => handleProtectedRoute("/donate")}
+          className="hover:text-purple-600 cursor-pointer"
+        >
+          Donate
+        </span>
 
-        {/* Sign Up button on the far right if not logged in */}
         {!isLoggedIn && (
           <button
             onClick={() => navigate("/sign-up")}

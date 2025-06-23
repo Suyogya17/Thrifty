@@ -12,6 +12,8 @@ import Rent from "./pages/Public/items/rent";
 import Buy from "./pages/Public/items/buy";
 import Sell from "./pages/Public/items/sell";
 import Order from "./pages/Public/orders/order";
+import Donate from "./pages/Public/items/donate";
+import Donation from "./pages/Public/items/donationform";
 import Cart from "./pages/Public/orders/cart";
 import Checkout from "./pages/Public/orders/checkoutform";
 import LoginPage from "./pages/Public/login";
@@ -60,6 +62,14 @@ const router = createBrowserRouter([
    {
     path: "/order",
     element: <Order />,
+  },
+  {
+    path: "/donate",
+    element: <Donate />,
+  },
+  {
+    path: "/donation-form",
+    element: <Donation />,
   },
    {
     path: "/cart",

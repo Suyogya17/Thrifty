@@ -64,3 +64,17 @@ export const useUpdateItem = () => {
     },
   });
 };
+
+// ✅ Add donation mutation
+export const useDonateClothes = () => {
+  return useMutation({
+    mutationFn: async (formData) => {
+      const response = await api.post("/donate", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return response.data;
+    },
+  });
+};

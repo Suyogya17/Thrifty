@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -26,6 +26,23 @@ const Account = () => {
     address: "",
   });
 
+  // For new image file and preview URL
+  const [newImage, setNewImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
+
+  useEffect(() => {
+    if (user) {
+      setForm({
+        fullname: user.fullname,
+        username: user.username,
+        email: user.email,
+        phoneNo: user.phoneNo,
+        address: user.address,
+      });
+      setPreviewImage(`http://localhost:3000/uploads/${user.image}`);
+    }
+  }, [user]);
+
   const handleChange = (e) => {
     setForm((prev) => ({
       ...prev,
@@ -33,21 +50,27 @@ const Account = () => {
     }));
   };
 
+  // Handle image selection
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setNewImage(file);
+      setPreviewImage(URL.createObjectURL(file)); // Preview selected image
+    }
+  };
+
   const handleEdit = () => {
     setEditMode(true);
-    setForm({
-      fullname: user.fullname,
-      username: user.username,
-      email: user.email,
-      phoneNo: user.phoneNo,
-      address: user.address,
-    });
   };
 
   const handleUpdate = () => {
     const formData = new FormData();
     for (let key in form) {
       formData.append(key, form[key]);
+    }
+    if (newImage) {
+    formData.append("profilePicture", newImage); // ✅ MUST match multer field
+
     }
 
     updateUser({ formData, customerId: user._id });
@@ -56,7 +79,6 @@ const Account = () => {
   };
 
   const handleDelete = () => {
-    // Simulate delete action
     toast.error("Account deleted (mock)");
     setConfirmDelete(false);
     localStorage.removeItem("userToken");
@@ -67,107 +89,122 @@ const Account = () => {
   if (error) return <p className="text-red-500">Error: {error.message}</p>;
 
   return (
-    <><Navbar />
-    <div className={`${darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-black "} min-h-screen py-12 px-6`}>
-
-      <div className="max-w-3xl mx-auto p-8 bg-white rounded-xl shadow-xl">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">My Account</h2>
-          <button
-            className={`px-4 py-2 rounded-lg ${darkMode ? "bg-gray-700 text-white" : "bg-gray-300"}`}
-            onClick={() => setDarkMode(!darkMode)}
-          >
-            {darkMode ? "Light Mode" : "Dark Mode"}
-          </button>
-        </div>
-
-        <div className="flex items-center gap-4 mb-8">
-          <img
-            src={`http://localhost:3000/uploads/${user.image}`}
-            alt="Profile"
-            className="w-24 h-24 rounded-full border" />
-          <div>
-            <h3 className="text-xl font-semibold">{user.fullname}</h3>
-            <p className="text-gray-500">{user.role}</p>
+    <>
+      <Navbar />
+      <div className={`${darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-black "} min-h-screen py-12 px-6`}>
+        <div className="max-w-3xl mx-auto p-8 bg-white rounded-xl shadow-xl">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold">My Account</h2>
+            <button
+              className={`px-4 py-2 rounded-lg ${darkMode ? "bg-gray-700 text-white" : "bg-gray-300"}`}
+              onClick={() => setDarkMode(!darkMode)}
+            >
+              {darkMode ? "Light Mode" : "Dark Mode"}
+            </button>
           </div>
-        </div>
 
-        <div className="space-y-4">
-          {["fullname", "username", "email", "phoneNo", "address"].map((field) => (
-            <div key={field}>
-              <label className="block text-sm font-medium capitalize">{field}</label>
-              {editMode ? (
+          <div className="flex items-center gap-4 mb-8">
+            <div>
+              <img
+                src={previewImage}
+                alt="Profile"
+                className="w-24 h-24 rounded-full border object-cover"
+              />
+              {editMode && (
                 <input
-                  type="text"
-                  name={field}
-                  value={form[field]}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border rounded-lg mt-1" />
-              ) : (
-                <p className="text-gray-700 mt-1">{user[field]}</p>
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="mt-2"
+                />
               )}
             </div>
-          ))}
-        </div>
 
-        <div className="mt-8 flex gap-4">
-          {!editMode ? (
-            <button
-              onClick={handleEdit}
-              className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-            >
-              Edit Account
-            </button>
-          ) : (
-            <>
+            <div>
+              <h3 className="text-xl font-semibold">{user.fullname}</h3>
+              <p className="text-gray-500">{user.role}</p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {["fullname", "username", "email", "phoneNo", "address"].map((field) => (
+              <div key={field}>
+                <label className="block text-sm font-medium capitalize">{field}</label>
+                {editMode ? (
+                  <input
+                    type="text"
+                    name={field}
+                    value={form[field]}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border rounded-lg mt-1"
+                  />
+                ) : (
+                  <p className="text-gray-700 mt-1">{user[field]}</p>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 flex gap-4">
+            {!editMode ? (
               <button
-                onClick={handleUpdate}
-                className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                onClick={handleEdit}
+                className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
               >
-                {isPending ? "Updating..." : "Update"}
+                Edit Account
               </button>
-              <button
-                onClick={() => setEditMode(false)}
-                className="px-6 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500"
-              >
-                Cancel
-              </button>
-            </>
-          )}
-          <button
-            onClick={() => setConfirmDelete(true)}
-            className="ml-auto px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-          >
-            Delete Account
-          </button>
-        </div>
-
-        {updateError && <p className="text-red-500 mt-2">{updateError.message}</p>}
-
-        {confirmDelete && (
-          <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded-lg shadow-xl text-center w-80">
-              <h3 className="text-lg font-bold mb-4">Are you sure?</h3>
-              <p className="text-sm mb-6">This will permanently delete your account.</p>
-              <div className="flex justify-between">
+            ) : (
+              <>
                 <button
-                  onClick={() => setConfirmDelete(false)}
-                  className="px-4 py-2 bg-gray-300 rounded-lg"
+                  onClick={handleUpdate}
+                  className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                  disabled={isPending}
+                >
+                  {isPending ? "Updating..." : "Update"}
+                </button>
+                <button
+                  onClick={() => setEditMode(false)}
+                  className="px-6 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500"
                 >
                   Cancel
                 </button>
-                <button
-                  onClick={handleDelete}
-                  className="px-4 py-2 bg-red-500 text-white rounded-lg"
-                >
-                  Yes, Delete
-                </button>
+              </>
+            )}
+            <button
+              onClick={() => setConfirmDelete(true)}
+              className="ml-auto px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+            >
+              Delete Account
+            </button>
+          </div>
+
+          {updateError && <p className="text-red-500 mt-2">{updateError.message}</p>}
+
+          {confirmDelete && (
+            <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+              <div className="bg-white p-6 rounded-lg shadow-xl text-center w-80">
+                <h3 className="text-lg font-bold mb-4">Are you sure?</h3>
+                <p className="text-sm mb-6">This will permanently delete your account.</p>
+                <div className="flex justify-between">
+                  <button
+                    onClick={() => setConfirmDelete(false)}
+                    className="px-4 py-2 bg-gray-300 rounded-lg"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleDelete}
+                    className="px-4 py-2 bg-red-500 text-white rounded-lg"
+                  >
+                    Yes, Delete
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div></>
+    </>
   );
 };
 

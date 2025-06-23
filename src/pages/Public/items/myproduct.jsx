@@ -63,7 +63,6 @@ const MyProducts = () => {
                       <th className="px-4 py-3">Image</th>
                       <th className="px-4 py-3">Name</th>
                       <th className="px-4 py-3">Price (Rs)</th>
-                      <th className="px-4 py-3">Quantity</th>
                       <th className="px-4 py-3">Description</th>
                       <th className="px-4 py-3 text-center">Actions</th>
                     </tr>
@@ -80,7 +79,6 @@ const MyProducts = () => {
                         </td>
                         <td className="px-4 py-2 font-medium">{product.productName}</td>
                         <td className="px-4 py-2">{product.price}</td>
-                        <td className="px-4 py-2">{product.quantity || "N/A"}</td>
                         <td className="px-4 py-2 text-sm">{product.description}</td>
                         <td className="px-4 py-2 text-center">
                           <button

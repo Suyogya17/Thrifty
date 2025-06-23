@@ -1,33 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaFilter } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useGetItemsByType } from "./query";
-import Navbar from "../../../components/Navbar/navbar"; // ✅ Adjust path based on your structure
+import Navbar from "../../../components/Navbar/navbar";
 
-export default function RentItems() {
+export default function RentProducts() {
   const navigate = useNavigate();
   const { data, isError, error, isLoading } = useGetItemsByType("rent");
-
-  const items = Array.isArray(data) ? data : [];
-
   const [searchQuery, setSearchQuery] = useState("");
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(50000);
   const [showFilter, setShowFilter] = useState(false);
 
-  const handleOrder = (item) => {
-    navigate("/order", { state: { item } });
+  const products = Array.isArray(data) ? data : [];
+
+  const filteredProducts = products.filter((product) =>
+    product.productName.toLowerCase().includes(searchQuery.toLowerCase()) &&
+    Number(product.price) >= minPrice &&
+    Number(product.price) <= maxPrice
+  );
+
+  const handleOrder = (product) => {
+    navigate("/order", { state: { product } });
   };
 
-  const filteredItems = items.filter((item) => {
-    return (
-      item.productName.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      Number(item.price) >= minPrice &&
-      Number(item.price) <= maxPrice
-    );
-  });
-
-  if (isLoading) return <p className="text-center mt-10">Loading items...</p>;
+  if (isLoading) return <p className="text-center mt-10">Loading products...</p>;
   if (isError) return <p className="text-center mt-10">Error: {error.message}</p>;
 
   return (
@@ -36,7 +33,7 @@ export default function RentItems() {
 
       <div className="container mx-auto p-6 mt-6">
         <div className="flex justify-between items-center flex-wrap gap-4">
-          <h2 className="text-3xl font-bold">Items for Rent</h2>
+          <h2 className="text-3xl font-bold">Products for Rent</h2>
 
           <input
             type="text"
@@ -73,7 +70,6 @@ export default function RentItems() {
                   step="100"
                 />
               </div>
-
               <div>
                 <label className="block text-gray-600 text-sm mb-1">
                   Max Price (Rs): <span className="font-bold">{maxPrice}</span>
@@ -93,29 +89,29 @@ export default function RentItems() {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-          {filteredItems.length > 0 ? (
-            filteredItems.map((item) => (
+          {filteredProducts.length > 0 ? (
+            filteredProducts.map((product) => (
               <div
-                key={item._id}
+                key={product._id}
                 className="bg-white rounded-lg shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl"
               >
                 <img
-                  src={`http://localhost:3000/uploads/${item.image}`}
-                  alt={item.productName}
-                  className="w-full h-80 object-cover"
+                  src={`http://localhost:3000/uploads/${product.image}`}
+                  alt={product.productName}
+                  className="w-full h-50 object-cover"
                   onError={(e) => {
                     e.target.onerror = null;
                     e.target.src = "/placeholder.png"; // fallback image
                   }}
                 />
                 <div className="p-4">
-                  <h3 className="text-xl font-semibold mb-2">{item.productName}</h3>
-                  <p className="text-gray-500 text-sm mb-2">{item.description}</p>
-                  <p className="text-lg font-bold text-green-600">Rs {item.price}</p>
-                  <div className="flex justify-between items-center mt-4">
+                  <h3 className="text-xl font-semibold mb-2">{product.productName}</h3>
+                  <p className="text-gray-500 text-sm mb-2">{product.description}</p>
+                  <p className="text-lg font-bold text-green-600">Rs {product.price}</p>
+                  <div className="flex justify-end mt-4">
                     <button
                       className="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700"
-                      onClick={() => handleOrder(item)}
+                      onClick={() => handleOrder(product)}
                     >
                       Rent Now
                     </button>
@@ -125,7 +121,7 @@ export default function RentItems() {
             ))
           ) : (
             <p className="text-center text-gray-500 col-span-full mt-10">
-              No items available for rent.
+              No products available for rent.
             </p>
           )}
         </div>

@@ -24,7 +24,7 @@ export default function Navbar() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("customerId");
+    localStorage.removeItem("id");
     window.location.href = "/";
   };
 

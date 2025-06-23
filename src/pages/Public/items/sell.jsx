@@ -38,7 +38,7 @@ export default function SellItems() {
       <Navbar />
 
       <div className="container mx-auto p-6">
-        <h2 className="text-3xl font-bold mb-6 text-center text-purple-700">Items for Sale</h2>
+        <h2 className="text-3xl font-bold mb-6 text-center text-purple-700">Product by thrifty</h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {items.length > 0 ? (
@@ -53,7 +53,7 @@ export default function SellItems() {
                     src={
                       item.image
                         ? `http://localhost:3000/uploads/${item.image}`
-                        : "https://via.placeholder.com/400x300?text=No+Image"
+                        : "https://via.placeholder.com/400x00?text=No+Image"
                     }
                     alt={item?.productName || "Product"}
                     className="w-full h-64 object-cover"

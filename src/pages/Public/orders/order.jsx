@@ -13,7 +13,7 @@ const OrderPage = () => {
     <>
       <Navbar />
       <div className="max-w-3xl mx-auto py-10 px-4">
-        <img src={`http://localhost:3000/uploads/${product.image}`} alt={product.productName} className="w-full h-64 object-cover rounded-md mb-6" />
+        <img src={`http://localhost:3000/uploads/${product.image}`} alt={product.productName} className="w-1/3 h-80 object-cover rounded-md mb-6" />
         <h2 className="text-2xl font-bold mb-2">{product.productName}</h2>
         <p className="text-gray-700 mb-4">{product.description}</p>
         <p className="text-purple-600 font-bold mb-6">Rs {product.price}</p>
