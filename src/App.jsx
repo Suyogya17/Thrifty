@@ -7,6 +7,7 @@ import Dashboard from './pages/Public/dashboard/dashboard';
 import Account from "./pages/Public/account";
 import AddProduct from "./pages/Public/items/add_products";
 import MyProduct from "./pages/Public/items/myproduct";
+import ProductDetails from "./components/ProductCard/productdetail";
 import Landing from './pages/Public/dashboard/landing';
 import Rent from "./pages/Public/items/rent";
 import Buy from "./pages/Public/items/buy";
@@ -18,6 +19,8 @@ import Cart from "./pages/Public/orders/cart";
 import Checkout from "./pages/Public/orders/checkoutform";
 import LoginPage from "./pages/Public/login";
 import RegistrationPage from "./pages/Public/registration";
+import EditProduct from "./pages/Public/items/product-edit";
+import CategoryPage from "./pages/Public/category/category";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +34,10 @@ const router = createBrowserRouter([
     element:<Dashboard/>,
   },
   {
+  path: "/product/:id",
+  element: <ProductDetails />,
+},
+  {
     path: "/rent",
     element:<Rent/>,
   },
@@ -41,6 +48,10 @@ const router = createBrowserRouter([
   {
     path: "/add-product",
     element: <AddProduct />,
+  },
+  {
+    path: "/edit/:id",
+    element: <EditProduct />,
   },
   {
     path: "/my-product",
@@ -82,6 +93,11 @@ const router = createBrowserRouter([
   {
     path: "/sign-up",
     element: <RegistrationPage />,
+  },
+
+  {
+    path: "/category/:categoryName",
+    element: <CategoryPage />,
   },
 ]);
 

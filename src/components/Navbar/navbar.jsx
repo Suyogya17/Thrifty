@@ -1,16 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  FaFilter,
-  FaHeart,
-  FaShoppingCart,
-  FaUser
-} from "react-icons/fa";
-import { useNavigate } from "react-router-dom"; // ✅ import useNavigate
+import { FaFilter, FaHeart, FaShoppingCart, FaUser } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const navigate = useNavigate(); // ✅ hook for programmatic navigation
+  const navigate = useNavigate();
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -42,11 +37,10 @@ export default function Navbar() {
 
         {/* Menu Links */}
         <div className="hidden md:flex space-x-10 gap-3 font-medium text-white">
-          <a href="#" className="hover:text-purple-600">Men</a>
-          <a href="#" className="hover:text-purple-600">Women</a>
-          <a href="#" className="hover:text-purple-600">Kids</a>
-          <a href="#" className="hover:text-purple-600">Sale</a>
-          <a href="#" className="hover:text-purple-600">Trending</a>
+         <a href="/category/men" className="hover:text-purple-600">Men</a>
+<a href="/category/women" className="hover:text-purple-600">Women</a>
+<a href="/category/kid" className="hover:text-purple-600">Kids</a>
+<a href="/category/sale" className="hover:text-purple-600">Sale</a>
         </div>
 
         {/* Search Bar */}
@@ -101,7 +95,7 @@ export default function Navbar() {
 
           <FaHeart className="cursor-pointer" />
 
-          {/* ✅ Cart icon with click navigation */}
+          {/* Cart icon with navigation */}
           <FaShoppingCart
             className="cursor-pointer"
             onClick={() => navigate("/cart")}
@@ -116,11 +110,36 @@ export default function Navbar() {
           <span>Filter</span>
         </div>
 
-        <a href="#" className="hover:text-purple-600">Browse</a>
-        <a href="/rent" className="hover:text-purple-600">Rent</a>
-        <a href="/sell" className="hover:text-purple-600">Sell</a>
-        <a href="/buy" className="hover:text-purple-600">Buy</a>
-        <a href="/donate" className="hover:text-purple-600">Donate</a>
+        <button
+          onClick={() => navigate("/browse")}
+          className="hover:text-purple-600"
+        >
+          Browse
+        </button>
+        <button
+          onClick={() => navigate("/rent")}
+          className="hover:text-purple-600"
+        >
+          Rent
+        </button>
+        <button
+          onClick={() => navigate("/sell")}
+          className="hover:text-purple-600"
+        >
+          Sell
+        </button>
+        <button
+          onClick={() => navigate("/buy")}
+          className="hover:text-purple-600"
+        >
+          Buy
+        </button>
+        <button
+          onClick={() => navigate("/donate")}
+          className="hover:text-purple-600"
+        >
+          Donate
+        </button>
       </div>
     </div>
   );

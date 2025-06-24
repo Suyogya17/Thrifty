@@ -35,7 +35,7 @@ const DonationForm = () => {
 
     mutate(formData, {
       onSuccess: () => {
-        navigate("/dashboard"); // Navigate or show success
+        navigate("/dashboard"); 
       },
       onError: (err) => {
         console.error("Donation failed:", err);
