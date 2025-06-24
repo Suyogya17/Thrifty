@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../../../components/Navbar/navbar";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const AddItemForm = () => {
   const [formData, setFormData] = useState({
@@ -15,6 +17,7 @@ const AddItemForm = () => {
 
   const [images, setImages] = useState([]);
   const [userId, setUserId] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedId = localStorage.getItem("id");
@@ -23,7 +26,7 @@ const AddItemForm = () => {
       setUserId(storedId);
       setFormData((prev) => ({ ...prev, owner: storedId }));
     } else {
-      alert("You must be logged in to upload an item.");
+      toast.error("You must be logged in to upload an item.");
     }
   }, []);
 
@@ -40,7 +43,7 @@ const AddItemForm = () => {
     e.preventDefault();
 
     if (!formData.owner) {
-      alert("Owner ID is missing. Please log in first.");
+      toast.error("Owner ID is missing. Please log in first.");
       return;
     }
 
@@ -53,11 +56,6 @@ const AddItemForm = () => {
       data.append("images", image);
     });
 
-    console.log("FormData contents:");
-    for (let pair of data.entries()) {
-      console.log(pair[0], pair[1]);
-    }
-
     try {
       const res = await axios.post("http://localhost:3000/api/product/createProduct", data, {
         headers: {
@@ -65,11 +63,11 @@ const AddItemForm = () => {
         },
       });
 
-      alert("Item uploaded successfully!");
-      console.log(res.data);
+      toast.success("Item uploaded successfully!");
+      navigate("/dashboard");
     } catch (err) {
       console.error("Upload error:", err.response?.data || err.message);
-      alert("Failed to upload item.");
+      toast.error("Failed to upload item.");
     }
   };
 

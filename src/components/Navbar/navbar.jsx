@@ -83,6 +83,13 @@ export default function Navbar() {
                 >
                   My Products
                 </a>
+                 <a
+                  href="/my-donation"
+                  className="block px-4 py-2 hover:bg-purple-700"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  My Donation
+                </a>
                 <button
                   onClick={handleLogout}
                   className="w-full text-left px-4 py-2 hover:bg-purple-700"

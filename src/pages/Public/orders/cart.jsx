@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Footer from "../../../components/Footer/footer";
 import Navbar from "../../../components/Navbar/navbar";
 import { getOrdersByCustomer, deleteOrder, updateOrder } from "../../Public/orders/query";
+import { toast } from "react-toastify";
 
 const CartPage = () => {
   const [orders, setOrders] = useState([]);
@@ -19,6 +20,7 @@ const CartPage = () => {
     } catch (err) {
       console.error("Failed to fetch orders", err);
       setError("Failed to load orders");
+      toast.error("Failed to load orders.");
     } finally {
       setLoading(false);
     }
@@ -35,8 +37,9 @@ const CartPage = () => {
     try {
       await deleteOrder(orderId);
       setOrders((prev) => prev.filter((order) => order._id !== orderId));
+      toast.success("Order deleted successfully.");
     } catch (err) {
-      alert("Failed to delete order.");
+      toast.error("Failed to delete order.");
       console.error(err);
     }
   };
@@ -48,8 +51,9 @@ const CartPage = () => {
       setOrders((prev) =>
         prev.map((order) => (order._id === orderId ? updated.data : order))
       );
+      toast.success("Order cancelled successfully.");
     } catch (err) {
-      alert("Failed to update order.");
+      toast.error("Failed to update order.");
       console.error(err);
     }
   };

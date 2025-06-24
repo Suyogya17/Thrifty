@@ -7,6 +7,7 @@ import Dashboard from './pages/Public/dashboard/dashboard';
 import Account from "./pages/Public/account";
 import AddProduct from "./pages/Public/items/add_products";
 import MyProduct from "./pages/Public/items/myproduct";
+import MyDonation from "./pages/Public/items/mydonation";
 import ProductDetails from "./components/ProductCard/productdetail";
 import Landing from './pages/Public/dashboard/landing';
 import Rent from "./pages/Public/items/rent";
@@ -56,6 +57,10 @@ const router = createBrowserRouter([
   {
     path: "/my-product",
     element: <MyProduct />,
+  },
+  {
+    path: "/my-donation",
+    element: <MyDonation />,
   },
   {
     path: "/sign-in",

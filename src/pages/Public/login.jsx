@@ -67,11 +67,11 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar />
-      <ToastContainer position="top-center" autoClose={3000} />
+      <ToastContainer position="top-right" autoClose={3000} />
 
       <div className="flex flex-col lg:flex-row items-center justify-center max-w-6xl mx-auto mt-10 p-10 shadow-lg bg-white rounded-xl">
         {/* Image Section */}
-        <div className="w-full lg:w-1/2 flex flex-col items-center text-center p-4">
+        <div className="w-full lg:w-1/3 flex flex-col items-center text-center p-4">
           <h2 className="text-3xl font-bold text-purple-600 mb-4">NEW TREND</h2>
           <div className="relative w-full max-w-md h-96 overflow-hidden rounded-md shadow-md bg-gray-200">
             {images.map((img, index) => (

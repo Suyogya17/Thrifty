@@ -55,7 +55,7 @@ const Footer = () => {
           <div className="flex space-x-4 mt-4">
             <a href="https://facebook.com" aria-label="Facebook" className="hover:text-pink-400">
               <svg
-                className="w-6 h-6 fill-current"
+                className="w-full h-9 c"
                 viewBox="0 0 24 24"
               >
                 <path d="M22 12a10 10 0 1 0-11.5 9.87v-6.99h-2.4v-2.88h2.4v-2.2c0-2.38 1.42-3.7 3.58-3.7 1.04 0 2.13.18 2.13.18v2.34h-1.2c-1.18 0-1.55.74-1.55 1.5v1.87h2.64l-.42 2.88h-2.22v6.99A10 10 0 0 0 22 12z" />

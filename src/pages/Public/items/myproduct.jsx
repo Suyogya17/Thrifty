@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { FaTrash, FaEdit } from "react-icons/fa";
 import Navbar from "../../../components/Navbar/navbar";
 import Footer from "../../../components/Footer/footer";
+import { toast } from "react-toastify";
 
 const MyProducts = () => {
   const navigate = useNavigate();
@@ -36,6 +37,11 @@ const MyProducts = () => {
             }
             return updated;
           });
+          toast.success("Product deleted successfully.");
+        },
+        onError: (err) => {
+          toast.error("Failed to delete product.");
+          console.error(err);
         },
       });
     }

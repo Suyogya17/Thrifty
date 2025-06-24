@@ -3,6 +3,7 @@ import { useState } from "react";
 import Navbar from "../../../components/Navbar/navbar";
 import Footer from "../../../components/Footer/footer";
 import { createOrder } from "../../Public/orders/query";
+import { toast } from "react-toastify";
 
 const CheckoutPage = () => {
   const { state } = useLocation(); // { product, summary }
@@ -21,7 +22,6 @@ const CheckoutPage = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const customerId = localStorage.getItem("id"); // Ensure you have stored user id here
 
@@ -31,7 +31,6 @@ const CheckoutPage = () => {
 
   const handlePlaceOrder = async () => {
     setLoading(true);
-    setError("");
 
     try {
       if (!customerId) throw new Error("User not logged in.");
@@ -60,10 +59,11 @@ const CheckoutPage = () => {
       };
 
       await createOrder(orderData);
-      alert("Order placed successfully!");
-      navigate("/cart"); // Redirect to orders page or thank you page
+
+      toast.success("Order placed successfully!");
+      navigate("/cart"); // Redirect to cart or order list page
     } catch (err) {
-      setError(err.response?.data?.message || err.message || "Something went wrong");
+      toast.error(err.response?.data?.message || err.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -166,8 +166,6 @@ const CheckoutPage = () => {
             <span>Rs {summary.totalAmount.toFixed(2)}</span>
           </div>
         </div>
-
-        {error && <p className="text-red-600 mb-4">{error}</p>}
 
         <button
           onClick={handlePlaceOrder}

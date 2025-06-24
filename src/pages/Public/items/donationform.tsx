@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../../components/Navbar/navbar";
 import { useDonateClothes } from "../../../pages/Public/items/query";
+import { toast } from "react-toastify";
 
 const DonationForm = () => {
   const navigate = useNavigate();
@@ -33,12 +34,14 @@ const DonationForm = () => {
     Object.entries(form).forEach(([key, val]) => formData.append(key, val));
     if (image) formData.append("image", image);
 
-    mutate(formData, {
+    mutate(formData as any, {
       onSuccess: () => {
-        navigate("/dashboard"); 
+      toast.success("Donation submitted successfully!");
+      navigate("/dashboard");
       },
       onError: (err) => {
-        console.error("Donation failed:", err);
+      toast.error("Failed to submit donation. Please try again.");
+      console.error("Donation failed:", err);
       },
     });
   };
@@ -54,9 +57,7 @@ const DonationForm = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Donor Name */}
             <div>
-              <label className="block text-sm font-medium mb-1">
-                Donor Name
-              </label>
+              <label className="block text-sm font-medium mb-1">Donor Name</label>
               <input
                 type="text"
                 name="donorName"
@@ -69,9 +70,7 @@ const DonationForm = () => {
 
             {/* Address */}
             <div>
-              <label className="block text-sm font-medium mb-1">
-                Pick-Up Address
-              </label>
+              <label className="block text-sm font-medium mb-1">Pick-Up Address</label>
               <input
                 type="text"
                 name="address"
@@ -84,9 +83,7 @@ const DonationForm = () => {
 
             {/* Sanitized */}
             <div>
-              <label className="block text-sm font-medium mb-2">
-                Is it Sanitized?
-              </label>
+              <label className="block text-sm font-medium mb-2">Is it Sanitized?</label>
               <div className="flex gap-4">
                 {["Yes", "No"].map((val) => (
                   <label key={val} className="flex items-center gap-2">
@@ -106,9 +103,7 @@ const DonationForm = () => {
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-medium mb-1">
-                Description of Clothes
-              </label>
+              <label className="block text-sm font-medium mb-1">Description of Clothes</label>
               <textarea
                 name="description"
                 rows={3}
@@ -121,9 +116,7 @@ const DonationForm = () => {
 
             {/* Image */}
             <div>
-              <label className="block text-sm font-medium mb-1">
-                Upload Image
-              </label>
+              <label className="block text-sm font-medium mb-1">Upload Image</label>
               <input
                 type="file"
                 accept="image/*"
