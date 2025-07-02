@@ -16,6 +16,7 @@ const ProductDetails = () => {
   const [product, setProduct] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
   const [showAR, setShowAR] = useState(false);
+  const [scale, setScale] = useState(1); // New scale state for tshirt size
 
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
@@ -91,8 +92,9 @@ const ProductDetails = () => {
         const centerX = (leftShoulderPx.x + rightShoulderPx.x) / 2;
         const centerY = (leftShoulderPx.y + rightShoulderPx.y) / 2;
 
-        const torsoWidth = Math.abs(rightShoulderPx.x - leftShoulderPx.x) * 2;
-        const torsoHeight = Math.abs(leftHipPx.y - centerY) * 1.6;
+        // Multiply by scale for size control
+        const torsoWidth = Math.abs(rightShoulderPx.x - leftShoulderPx.x) * 2 * scale;
+        const torsoHeight = Math.abs(leftHipPx.y - centerY) * 1.6 * scale;
 
         const angleRad = Math.atan2(
           rightShoulderPx.y - leftShoulderPx.y,
@@ -138,7 +140,7 @@ const ProductDetails = () => {
         cameraRef.current = null;
       }
     };
-  }, [showAR, product]);
+  }, [showAR, product, scale]); // added scale to dependencies to update size dynamically
 
   const handleBuy = () => navigate("/order", { state: { product, action: "buy" } });
   const handleRent = () => navigate("/order", { state: { product, action: "rent" } });
@@ -214,22 +216,39 @@ const ProductDetails = () => {
         )}
 
         {showAR && (
-          <div className="relative mt-10 w-[640px] h-[480px] mx-auto">
-            <Webcam
-              ref={webcamRef}
-              mirrored
-              screenshotFormat="image/jpeg"
-              videoConstraints={{ width: 640, height: 480, facingMode: "user" }}
-              style={{ position: "absolute", top: 0, left: 0, width: 640, height: 480 }}
-            />
-            <canvas
-              ref={canvasRef}
-              width={640}
-              height={480}
-              className="border"
-              style={{ position: "absolute", top: 0, left: 0 }}
-            />
-          </div>
+          <>
+            <div className="relative mt-10 w-[640px] h-[480px] mx-auto">
+              <Webcam
+                ref={webcamRef}
+                mirrored
+                screenshotFormat="image/jpeg"
+                videoConstraints={{ width: 640, height: 480, facingMode: "user" }}
+                style={{ position: "absolute", top: 0, left: 0, width: 640, height: 480 }}
+              />
+              <canvas
+                ref={canvasRef}
+                width={640}
+                height={480}
+                className="border"
+                style={{ position: "absolute", top: 0, left: 0 }}
+              />
+            </div>
+            {/* Size Control Buttons */}
+            <div className="mt-4 flex justify-center gap-4">
+              <button
+                onClick={() => setScale((prev) => Math.min(prev + 0.1, 2))}
+                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+              >
+                Increase Size
+              </button>
+              <button
+                onClick={() => setScale((prev) => Math.max(prev - 0.1, 0.5))}
+                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+              >
+                Decrease Size
+              </button>
+            </div>
+          </>
         )}
       </div>
       <Footer />

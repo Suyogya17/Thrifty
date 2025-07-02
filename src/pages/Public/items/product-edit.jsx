@@ -1,9 +1,11 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
 import axios from "axios";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-import Navbar from "../../../components/Navbar/navbar";
 import Footer from "../../../components/Footer/footer";
+import Navbar from "../../../components/Navbar/navbar";
 
 const EditProduct = () => {
   const { id } = useParams();
@@ -37,7 +39,10 @@ const EditProduct = () => {
           condition: res.data.condition,
         });
       })
-      .catch((err) => setError("Failed to fetch product data."));
+      .catch(() => {
+        toast.error("Failed to fetch product data.");
+        setError("Failed to fetch product data.");
+      });
   }, [id]);
 
   const handleChange = (e) => {
@@ -57,7 +62,6 @@ const EditProduct = () => {
     setError(null);
 
     try {
-      // Prepare form data to support file upload
       const formData = new FormData();
       formData.append("productName", form.productName);
       formData.append("price", form.price);
@@ -66,23 +70,22 @@ const EditProduct = () => {
       formData.append("type", form.type);
       formData.append("condition", form.condition);
 
-      // Append image only if a new one was selected
       if (imageFile) {
         formData.append("images", imageFile);
       }
 
-      // Send PUT request to backend to update product
       await axios.put(`http://localhost:3000/api/product/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
-      alert("Product updated successfully!");
-      navigate("/my-product");
+      toast.success("Product updated successfully!");
+      setTimeout(() => navigate("/my-product"), 2000);
     } catch (err) {
-      setError("Failed to update product. Please try again.");
       console.error(err);
+      setError("Failed to update product. Please try again.");
+      toast.error("Failed to update product.");
     } finally {
       setLoading(false);
     }
@@ -98,7 +101,6 @@ const EditProduct = () => {
         <h1 className="text-3xl font-bold mb-6">Edit Product</h1>
 
         <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-6">
-          {/* Name */}
           <div>
             <label className="block mb-1 font-medium">Product Name</label>
             <input
@@ -111,7 +113,6 @@ const EditProduct = () => {
             />
           </div>
 
-          {/* Price */}
           <div>
             <label className="block mb-1 font-medium">Price (Rs)</label>
             <input
@@ -125,7 +126,6 @@ const EditProduct = () => {
             />
           </div>
 
-          {/* Description */}
           <div>
             <label className="block mb-1 font-medium">Description</label>
             <textarea
@@ -138,7 +138,6 @@ const EditProduct = () => {
             />
           </div>
 
-          {/* Category */}
           <div>
             <label className="block mb-1 font-medium">Category</label>
             <select
@@ -149,14 +148,13 @@ const EditProduct = () => {
               required
             >
               <option value="">Select Category</option>
-              <option value="Men">Men</option>
-              <option value="Women">Women</option>
-              <option value="Kids">Kids</option>
-              <option value="Other">Other</option>
+              <option value="men">Men</option>
+              <option value="women">Women</option>
+              <option value="kid">Kids</option>
+              <option value="sale">Sale</option>
             </select>
           </div>
 
-          {/* Type */}
           <div>
             <label className="block mb-1 font-medium">Type</label>
             <select
@@ -174,7 +172,6 @@ const EditProduct = () => {
             </select>
           </div>
 
-          {/* Condition */}
           <div>
             <label className="block mb-1 font-medium">Condition</label>
             <select
@@ -190,7 +187,6 @@ const EditProduct = () => {
             </select>
           </div>
 
-          {/* Image Upload */}
           <div>
             <label className="block mb-1 font-medium">Product Image (leave empty to keep current)</label>
             <input
@@ -218,6 +214,7 @@ const EditProduct = () => {
         </form>
       </div>
       <Footer />
+      <ToastContainer position="top-right" autoClose={2000} />
     </>
   );
 };

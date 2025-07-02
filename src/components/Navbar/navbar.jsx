@@ -4,14 +4,19 @@ import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const filterRef = useRef(null);
   const navigate = useNavigate();
 
-  // Close dropdown on outside click
+  // Close dropdowns on outside click
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setDropdownOpen(false);
+      }
+      if (filterRef.current && !filterRef.current.contains(e.target)) {
+        setFilterOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -37,10 +42,18 @@ export default function Navbar() {
 
         {/* Menu Links */}
         <div className="hidden md:flex space-x-10 gap-3 font-medium text-white">
-         <a href="/category/men" className="hover:text-purple-600">Men</a>
-<a href="/category/women" className="hover:text-purple-600">Women</a>
-<a href="/category/kid" className="hover:text-purple-600">Kids</a>
-<a href="/category/sale" className="hover:text-purple-600">Sale</a>
+          <a href="/category/men" className="hover:text-purple-600">
+            Men
+          </a>
+          <a href="/category/women" className="hover:text-purple-600">
+            Women
+          </a>
+          <a href="/category/kid" className="hover:text-purple-600">
+            Kids
+          </a>
+          <a href="/category/sale" className="hover:text-purple-600">
+            Sale
+          </a>
         </div>
 
         {/* Search Bar */}
@@ -83,7 +96,7 @@ export default function Navbar() {
                 >
                   My Products
                 </a>
-                 <a
+                <a
                   href="/my-donation"
                   className="block px-4 py-2 hover:bg-purple-700"
                   onClick={() => setDropdownOpen(false)}
@@ -111,18 +124,45 @@ export default function Navbar() {
       </div>
 
       {/* Bottom Navbar */}
-      <div className="text-black px-4 py-2 flex flex-wrap gap-6 text-sm font-medium items-center bg-white">
-        <div className="flex items-center gap-2 cursor-pointer hover:text-purple-600">
-          <FaFilter />
-          <span>Filter</span>
-        </div>
+      <div className="text-black px-4 py-2 flex flex-wrap gap-6 text-sm font-medium items-center bg-white relative">
+        {/* Filter button and dropdown */}
+        {/* <div className="relative" ref={filterRef}> */}
+          {/* <div
+            className="flex items-center gap-2 cursor-pointer hover:text-purple-600 select-none"
+            onClick={() => setFilterOpen((prev) => !prev)}
+          >
+            <FaFilter />
+            <span>Filter</span>
+          </div> */}
 
-        <button
-          onClick={() => navigate("/browse")}
+          {/* {filterOpen && (
+            <div className="absolute top-full mt-1 left-0 bg-white border rounded shadow-lg p-4 w-48 z-50">
+              {/* Example filter options */}
+              {/* <h4 className="font-semibold mb-2">Filter Options</h4> */}
+              {/* <div className="flex flex-col gap-2">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" name="newArrivals" />
+                  New Arrivals
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" name="onSale" />
+                  On Sale
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" name="popular" />
+                  Popular
+                </label>
+              </div> */}
+            {/* </div>
+          )}
+        </div> */} 
+
+        {/* <button
+          onClick={() => navigate("/dashboard")}
           className="hover:text-purple-600"
         >
           Browse
-        </button>
+        </button> */}
         <button
           onClick={() => navigate("/rent")}
           className="hover:text-purple-600"

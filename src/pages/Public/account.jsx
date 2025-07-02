@@ -26,7 +26,6 @@ const Account = () => {
     address: "",
   });
 
-  // For new image file and preview URL
   const [newImage, setNewImage] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
 
@@ -50,12 +49,11 @@ const Account = () => {
     }));
   };
 
-  // Handle image selection
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setNewImage(file);
-      setPreviewImage(URL.createObjectURL(file)); // Preview selected image
+      setPreviewImage(URL.createObjectURL(file));
     }
   };
 
@@ -69,8 +67,7 @@ const Account = () => {
       formData.append(key, form[key]);
     }
     if (newImage) {
-    formData.append("profilePicture", newImage); // ✅ MUST match multer field
-
+      formData.append("profilePicture", newImage); // match your multer field name
     }
 
     updateUser({ formData, customerId: user._id });
@@ -91,12 +88,22 @@ const Account = () => {
   return (
     <>
       <Navbar />
-      <div className={`${darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-black "} min-h-screen py-12 px-6`}>
-        <div className="max-w-3xl mx-auto p-8 bg-white rounded-xl shadow-xl">
+      <div
+        className={`min-h-screen py-12 px-6 ${
+          darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-black"
+        }`}
+      >
+        <div
+          className={`max-w-3xl mx-auto p-8 rounded-xl shadow-xl ${
+            darkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+          }`}
+        >
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold">My Account</h2>
             <button
-              className={`px-4 py-2 rounded-lg ${darkMode ? "bg-gray-700 text-white" : "bg-gray-300"}`}
+              className={`px-4 py-2 rounded-lg ${
+                darkMode ? "bg-gray-700 text-white" : "bg-gray-300 text-black"
+              }`}
               onClick={() => setDarkMode(!darkMode)}
             >
               {darkMode ? "Light Mode" : "Dark Mode"}
@@ -115,34 +122,50 @@ const Account = () => {
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}
-                  className="mt-2"
+                  className={`mt-2 ${
+                    darkMode ? "text-white" : "text-black"
+                  }`}
                 />
               )}
             </div>
 
             <div>
               <h3 className="text-xl font-semibold">{user.fullname}</h3>
-              <p className="text-gray-500">{user.role}</p>
+              <p className="text-gray-400">{user.role}</p>
             </div>
           </div>
 
           <div className="space-y-4">
-            {["fullname", "username", "email", "phoneNo", "address"].map((field) => (
-              <div key={field}>
-                <label className="block text-sm font-medium capitalize">{field}</label>
-                {editMode ? (
-                  <input
-                    type="text"
-                    name={field}
-                    value={form[field]}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border rounded-lg mt-1"
-                  />
-                ) : (
-                  <p className="text-gray-700 mt-1">{user[field]}</p>
-                )}
-              </div>
-            ))}
+            {["fullname", "username", "email", "phoneNo", "address"].map(
+              (field) => (
+                <div key={field}>
+                  <label
+                    className={`block text-sm font-medium capitalize ${
+                      darkMode ? "text-white" : "text-black"
+                    }`}
+                  >
+                    {field}
+                  </label>
+                  {editMode ? (
+                    <input
+                      type="text"
+                      name={field}
+                      value={form[field]}
+                      onChange={handleChange}
+                      className={`w-full px-4 py-2 border rounded-lg mt-1 ${
+                        darkMode
+                          ? "bg-gray-700 border-gray-600 text-white placeholder-gray-300"
+                          : "bg-white border-gray-300 text-black placeholder-gray-700"
+                      }`}
+                    />
+                  ) : (
+                    <p className={`mt-1 ${darkMode ? "text-white" : "text-black"}`}>
+                      {user[field]}
+                    </p>
+                  )}
+                </div>
+              )
+            )}
           </div>
 
           <div className="mt-8 flex gap-4">
@@ -178,13 +201,17 @@ const Account = () => {
             </button>
           </div>
 
-          {updateError && <p className="text-red-500 mt-2">{updateError.message}</p>}
+          {updateError && (
+            <p className="text-red-500 mt-2">{updateError.message}</p>
+          )}
 
           {confirmDelete && (
             <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
               <div className="bg-white p-6 rounded-lg shadow-xl text-center w-80">
                 <h3 className="text-lg font-bold mb-4">Are you sure?</h3>
-                <p className="text-sm mb-6">This will permanently delete your account.</p>
+                <p className="text-sm mb-6">
+                  This will permanently delete your account.
+                </p>
                 <div className="flex justify-between">
                   <button
                     onClick={() => setConfirmDelete(false)}
