@@ -19,16 +19,10 @@ const MyDonations = () => {
 
       setLoading(true);
       try {
-        const res = await axios.get(
-          `http://localhost:3000/api/donation/user/${userId}`
-        );
+        const res = await axios.get(`http://localhost:3000/api/donation/user/${userId}`);
         setDonations(res.data);
       } catch (err) {
-        setError(
-          err.response?.data?.message ||
-            err.message ||
-            "Failed to load donations."
-        );
+        setError("Failed to load donations");
       } finally {
         setLoading(false);
       }
@@ -49,10 +43,7 @@ const MyDonations = () => {
           <p>No donations found.</p>
         ) : (
           donations.map((donation) => (
-            <div
-              key={donation._id}
-              className="border rounded p-4 mb-6 shadow bg-white"
-            >
+            <div key={donation._id} className="border rounded p-4 mb-6 shadow bg-white">
               <h2 className="text-xl font-semibold mb-2">{donation.donorName}</h2>
               <img
                 src={`http://localhost:3000/uploads/${donation.image}`}

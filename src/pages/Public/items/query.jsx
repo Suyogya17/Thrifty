@@ -69,7 +69,7 @@ export const useUpdateItem = () => {
 export const useDonateClothes = () => {
   return useMutation({
     mutationFn: async (formData) => {
-      const response = await api.post("/donate", formData, {
+      const response = await api.post("/donation", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -78,3 +78,4 @@ export const useDonateClothes = () => {
     },
   });
 };
+
