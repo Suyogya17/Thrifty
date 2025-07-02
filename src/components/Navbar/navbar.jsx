@@ -113,7 +113,7 @@ export default function Navbar() {
             )}
           </div>
 
-          <FaHeart className="cursor-pointer" />
+          <FaHeart className="cursor-pointer"  onClick={() => navigate("/wishlist")} />
 
           {/* Cart icon with navigation */}
           <FaShoppingCart

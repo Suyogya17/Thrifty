@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
 import axios from "axios";
-import Navbar from "../../../components/Navbar/navbar";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import Navbar from "../../../components/Navbar/navbar";
 
 const AddItemForm = () => {
   const [formData, setFormData] = useState({
@@ -15,7 +15,7 @@ const AddItemForm = () => {
     owner: "",
   });
 
-  const [images, setImages] = useState([]);
+  const [image, setImages] = useState([]);
   const [userId, setUserId] = useState("");
   const navigate = useNavigate();
 
@@ -52,9 +52,9 @@ const AddItemForm = () => {
       data.append(key, value);
     });
 
-    images.forEach((image) => {
-      data.append("images", image);
-    });
+    if (image.length > 0) {
+  data.append("image", image[0]); // ✅ Matches .single("image")
+}
 
     try {
       const res = await axios.post("http://localhost:3000/api/product/createProduct", data, {

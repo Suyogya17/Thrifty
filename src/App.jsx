@@ -22,6 +22,7 @@ import LoginPage from "./pages/Public/login";
 import RegistrationPage from "./pages/Public/registration";
 import EditProduct from "./pages/Public/items/product-edit";
 import CategoryPage from "./pages/Public/category/category";
+import WishlistPage from "./components/wishlist/myWishlist";
 
 const queryClient = new QueryClient();
 
@@ -98,6 +99,11 @@ const router = createBrowserRouter([
   {
     path: "/sign-up",
     element: <RegistrationPage />,
+  },
+
+  {
+    path: "/wishlist",
+    element: <WishlistPage />,
   },
 
   {

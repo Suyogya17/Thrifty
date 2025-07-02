@@ -1,9 +1,11 @@
 import * as cam from "@mediapipe/camera_utils";
 import { Pose } from "@mediapipe/pose";
-import Spline from "@splinetool/react-spline"; // ✅ Spline import
+import Spline from "@splinetool/react-spline";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
+import { FaHeart } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import Webcam from "react-webcam";
 
 import Footer from "../../components/Footer/footer";
@@ -16,22 +18,102 @@ const ProductDetails = () => {
   const [product, setProduct] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
   const [showAR, setShowAR] = useState(false);
-  const [scale, setScale] = useState(1); // New scale state for tshirt size
+  const [scale, setScale] = useState(1);
+  const [liked, setLiked] = useState(false);
 
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
   const cameraRef = useRef(null);
   const tshirtImgRef = useRef(null);
 
+  // Fetch product details and check if liked
   useEffect(() => {
     if (id) {
       axios
         .get(`http://localhost:3000/api/product/${id}`)
-        .then((res) => setProduct(res.data))
+        .then((res) => {
+          setProduct(res.data);
+          checkIfLiked(res.data._id);
+        })
         .catch((err) => console.error("Error fetching product:", err));
     }
   }, [id]);
 
+  // Check if product is already in wishlist
+  const checkIfLiked = async (productId) => {
+    try {
+      const userId = localStorage.getItem("id");
+      const token = localStorage.getItem("token");
+      if (!userId || !token) return;
+
+      const res = await axios.get(`http://localhost:3000/api/wishlist/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const isLiked = res.data.some(
+        (item) => (typeof item === "string" ? item === productId : item._id === productId)
+      );
+      setLiked(isLiked);
+    } catch (error) {
+      console.error("Error checking wishlist:", error);
+    }
+  };
+
+  // Add to wishlist handler
+  const handleAddToWishlist = async () => {
+    const userId = localStorage.getItem("id");
+    const token = localStorage.getItem("token");
+
+    if (!userId || !token) {
+      toast.warn("Please login to add to wishlist.");
+      return;
+    }
+
+    try {
+      await axios.post(
+        "http://localhost:3000/api/wishlist/addToWishlist",
+        {
+          customerId: userId,
+          itemId: product._id,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      toast.success("Added to wishlist!");
+      setLiked(true);
+    } catch (err) {
+      console.error("Error adding to wishlist:", err);
+      toast.error("Failed to add to wishlist.");
+    }
+  };
+
+  // Remove from wishlist handler
+  const handleRemoveFromWishlist = async () => {
+    const userId = localStorage.getItem("id");
+    const token = localStorage.getItem("token");
+
+    if (!userId || !token) {
+      toast.warn("Please login to modify your wishlist.");
+      return;
+    }
+
+    try {
+      await axios.delete(
+        "http://localhost:3000/api/wishlist/removeFromWishlist",
+        { customerId: userId, itemId: product._id },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success("Removed from wishlist!");
+      setLiked(false);
+    } catch (err) {
+      console.error("Error removing from wishlist:", err);
+      toast.error("Failed to remove from wishlist.");
+    }
+  };
+
+  // AR and pose estimation logic
   useEffect(() => {
     if (!showAR) {
       if (cameraRef.current) {
@@ -66,33 +148,26 @@ const ProductDetails = () => {
     pose.onResults((results) => {
       canvasCtx.save();
       canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-
       canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
 
       if (results.poseLandmarks) {
         const landmarks = results.poseLandmarks;
-
         const leftShoulder = landmarks[11];
         const rightShoulder = landmarks[12];
         const leftHip = landmarks[23];
-        const rightHip = landmarks[24];
 
-        function toPixelCoords(landmark) {
-          return {
-            x: landmark.x * canvasElement.width,
-            y: landmark.y * canvasElement.height,
-          };
-        }
+        const toPixelCoords = (lm) => ({
+          x: lm.x * canvasElement.width,
+          y: lm.y * canvasElement.height,
+        });
 
         const leftShoulderPx = toPixelCoords(leftShoulder);
         const rightShoulderPx = toPixelCoords(rightShoulder);
         const leftHipPx = toPixelCoords(leftHip);
-        const rightHipPx = toPixelCoords(rightHip);
 
         const centerX = (leftShoulderPx.x + rightShoulderPx.x) / 2;
         const centerY = (leftShoulderPx.y + rightShoulderPx.y) / 2;
 
-        // Multiply by scale for size control
         const torsoWidth = Math.abs(rightShoulderPx.x - leftShoulderPx.x) * 2 * scale;
         const torsoHeight = Math.abs(leftHipPx.y - centerY) * 1.6 * scale;
 
@@ -140,10 +215,27 @@ const ProductDetails = () => {
         cameraRef.current = null;
       }
     };
-  }, [showAR, product, scale]); // added scale to dependencies to update size dynamically
+  }, [showAR, product, scale]);
 
-  const handleBuy = () => navigate("/order", { state: { product, action: "buy" } });
-  const handleRent = () => navigate("/order", { state: { product, action: "rent" } });
+  // Buy button handler
+  const handleBuy = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.warn("Please login to continue buying.");
+      return;
+    }
+    navigate("/order", { state: { product, action: "buy" } });
+  };
+
+  // Rent button handler
+  const handleRent = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.warn("Please login to continue renting.");
+      return;
+    }
+    navigate("/order", { state: { product, action: "rent" } });
+  };
 
   if (!product) return <div className="p-6 text-center">Loading product...</div>;
 
@@ -152,12 +244,19 @@ const ProductDetails = () => {
       <Navbar />
       <div className="px-6 py-10 max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 bg-white p-6 rounded-xl shadow-lg">
-          <div className="w-full h-full">
+          <div className="w-full h-full relative">
             <img
               src={`http://localhost:3000/uploads/${product.image}`}
               alt={product.productName}
               className="w-full h-[400px] object-cover rounded-lg border"
             />
+            <button
+              onClick={liked ? handleRemoveFromWishlist : handleAddToWishlist}
+              className="absolute top-4 right-4 bg-white/90 p-3 rounded-full shadow hover:scale-125 transition-transform"
+              title={liked ? "Remove from Wishlist" : "Add to Wishlist"}
+            >
+              <FaHeart size={28} className={liked ? "text-red-600" : "text-gray-400"} />
+            </button>
           </div>
 
           <div className="flex flex-col justify-between">
@@ -233,7 +332,6 @@ const ProductDetails = () => {
                 style={{ position: "absolute", top: 0, left: 0 }}
               />
             </div>
-            {/* Size Control Buttons */}
             <div className="mt-4 flex justify-center gap-4">
               <button
                 onClick={() => setScale((prev) => Math.min(prev + 0.1, 2))}
