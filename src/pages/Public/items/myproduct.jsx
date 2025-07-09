@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { FaTrash, FaEdit } from "react-icons/fa";
 import Navbar from "../../../components/Navbar/navbar";
 import Footer from "../../../components/Footer/footer";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const MyProducts = () => {
   const navigate = useNavigate();
@@ -27,24 +28,28 @@ const MyProducts = () => {
   }, [items, userId]);
 
   const handleDelete = (itemId) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      deleteItem(itemId, {
-        onSuccess: () => {
-          setGroupedProducts((prev) => {
-            const updated = { ...prev };
-            for (const type in updated) {
-              updated[type] = updated[type].filter((item) => item._id !== itemId);
-            }
-            return updated;
-          });
-          toast.success("Product deleted successfully.");
-        },
-        onError: (err) => {
-          toast.error("Failed to delete product.");
-          console.error(err);
-        },
-      });
+    const confirmed = window.confirm("Are you sure you want to delete this product?");
+    if (!confirmed) {
+      toast.info("Deletion cancelled.");
+      return;
     }
+
+    deleteItem(itemId, {
+      onSuccess: () => {
+        setGroupedProducts((prev) => {
+          const updated = { ...prev };
+          for (const type in updated) {
+            updated[type] = updated[type].filter((item) => item._id !== itemId);
+          }
+          return updated;
+        });
+        toast.success("Product deleted successfully.");
+      },
+      onError: (err) => {
+        toast.error("Failed to delete product.");
+        console.error(err);
+      },
+    });
   };
 
   if (isLoading) return <div className="text-center mt-10">Loading your products...</div>;
@@ -110,6 +115,7 @@ const MyProducts = () => {
         )}
       </div>
       <Footer />
+      <ToastContainer position="top-right" autoClose={2000} />
     </>
   );
 };

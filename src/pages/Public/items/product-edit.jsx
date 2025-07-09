@@ -71,7 +71,7 @@ const EditProduct = () => {
       formData.append("condition", form.condition);
 
       if (imageFile) {
-        formData.append("images", imageFile);
+        formData.append("image", imageFile);
       }
 
       await axios.put(`http://localhost:3000/api/product/${id}`, formData, {

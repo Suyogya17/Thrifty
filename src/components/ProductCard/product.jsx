@@ -8,16 +8,9 @@ const renderStars = (rating) => {
   const empty = 5 - full - (half ? 1 : 0);
 
   const stars = [];
-
-  for (let i = 0; i < full; i++) {
-    stars.push(<span key={`full-${i}`} className="text-yellow-400">★</span>);
-  }
-  if (half) {
-    stars.push(<span key="half" className="text-yellow-400">☆</span>);
-  }
-  for (let i = 0; i < empty; i++) {
-    stars.push(<span key={`empty-${i}`} className="text-gray-300">★</span>);
-  }
+  for (let i = 0; i < full; i++) stars.push(<span key={`full-${i}`} className="text-yellow-400">★</span>);
+  if (half) stars.push(<span key="half" className="text-yellow-400">☆</span>);
+  for (let i = 0; i < empty; i++) stars.push(<span key={`empty-${i}`} className="text-gray-300">★</span>);
 
   return stars;
 };
@@ -29,6 +22,7 @@ const ProductCard = ({
   rating,
   price,
   description,
+  product,
   onRentClick,
   onBuyClick,
 }) => {
@@ -54,9 +48,9 @@ const ProductCard = ({
             <div className="flex space-x-3">
               <button
                 onClick={(e) => {
-                  e.stopPropagation();
                   e.preventDefault();
-                  onRentClick?.();
+                  e.stopPropagation();
+                  onRentClick?.(product);
                 }}
                 className="bg-purple-600 text-white px-3 py-1 rounded-md hover:bg-purple-700 transition"
               >
@@ -64,9 +58,9 @@ const ProductCard = ({
               </button>
               <button
                 onClick={(e) => {
-                  e.stopPropagation();
                   e.preventDefault();
-                  onBuyClick?.();
+                  e.stopPropagation();
+                  onBuyClick?.(product);
                 }}
                 className="bg-pink-500 text-white px-3 py-1 rounded-md hover:bg-pink-600 transition"
               >

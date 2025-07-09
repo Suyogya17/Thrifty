@@ -234,7 +234,7 @@ const ProductDetails = () => {
       toast.warn("Please login to continue renting.");
       return;
     }
-    navigate("/order", { state: { product, action: "rent" } });
+    navigate("/rent-form", { state: { product, action: "rent" } });
   };
 
   if (!product) return <div className="p-6 text-center">Loading product...</div>;

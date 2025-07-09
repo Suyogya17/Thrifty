@@ -1,6 +1,6 @@
-// Landing.jsx
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useGetItems } from "../items/query"; // adjust path if needed
+import { useGetItems } from "../items/query"; // adjust your import path
 
 import Footer from "../../../components/Footer/footer";
 import Hero from "../../../components/Hero/hero";
@@ -10,6 +10,15 @@ import ProductCard from "../../../components/ProductCard/product";
 const Landing = () => {
   const navigate = useNavigate();
   const { data, isLoading, isError, error } = useGetItems();
+
+  // Calculate order summary for Buy
+  const calculateSummary = (product) => {
+    const basePrice = product.price;
+    const taxAmount = basePrice * 0.13;
+    const deliveryCharge = 50;
+    const totalAmount = basePrice + taxAmount + deliveryCharge;
+    return { basePrice, taxAmount, deliveryCharge, totalAmount };
+  };
 
   if (isLoading) return <p className="text-center mt-10">Loading products...</p>;
   if (isError) return <p className="text-center mt-10">Error: {error.message}</p>;
@@ -26,16 +35,18 @@ const Landing = () => {
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {data.map((product) => (
               <ProductCard
-  key={product._id}
-  productId={product._id} // ✅ This is required
-  image={`http://localhost:3000/uploads/${product.image}`}
-  name={product.productName}
-  rating={product.rating || 4.5}
-  price={product.price}
-  description={product.description}
-  onBuyClick={() => navigate("/order", { state: { product } })}
-  onRentClick={() => navigate("/order", { state: { product } })}
-/>
+                key={product._id}
+                productId={product._id}
+                image={`http://localhost:3000/uploads/${product.image}`}
+                name={product.productName}
+                rating={product.rating || 4.5}
+                price={product.price}
+                description={product.description}
+                onBuyClick={() =>
+                  navigate("/order", { state: { product, summary: calculateSummary(product) } })
+                }
+                onRentClick={() => navigate("/rent-form", { state: { product } })}
+              />
             ))}
           </div>
         </div>

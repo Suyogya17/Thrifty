@@ -3,26 +3,29 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
-import Dashboard from './pages/Public/dashboard/dashboard';
-import Account from "./pages/Public/account";
-import AddProduct from "./pages/Public/items/add_products";
-import MyProduct from "./pages/Public/items/myproduct";
-import MyDonation from "./pages/Public/items/mydonation";
 import ProductDetails from "./components/ProductCard/productdetail";
+import WishlistPage from "./components/wishlist/myWishlist";
+import Account from "./pages/Public/account";
+import CategoryPage from "./pages/Public/category/category";
+import Dashboard from './pages/Public/dashboard/dashboard';
 import Landing from './pages/Public/dashboard/landing';
-import Rent from "./pages/Public/items/rent";
+import AddProduct from "./pages/Public/items/add_products";
 import Buy from "./pages/Public/items/buy";
-import Sell from "./pages/Public/items/sell";
-import Order from "./pages/Public/orders/order";
 import Donate from "./pages/Public/items/donate";
 import Donation from "./pages/Public/items/donationform";
+import MyDonation from "./pages/Public/items/mydonation";
+import MyProduct from "./pages/Public/items/myproduct";
+import EditProduct from "./pages/Public/items/product-edit";
+import Rent from "./pages/Public/items/rent";
+import RentForm from "./pages/Public/items/rentform";
+import Sell from "./pages/Public/items/sell";
+import LoginPage from "./pages/Public/login";
 import Cart from "./pages/Public/orders/cart";
 import Checkout from "./pages/Public/orders/checkoutform";
-import LoginPage from "./pages/Public/login";
+import Order from "./pages/Public/orders/order";
+import PayNow from "./pages/Public/orders/paynow";
 import RegistrationPage from "./pages/Public/registration";
-import EditProduct from "./pages/Public/items/product-edit";
-import CategoryPage from "./pages/Public/category/category";
-import WishlistPage from "./components/wishlist/myWishlist";
+import PayConfirmation from "./pages/Public/orders/payconfirmation";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +45,10 @@ const router = createBrowserRouter([
   {
     path: "/rent",
     element:<Rent/>,
+  },
+  {
+    path: "/rent-form",
+    element:<RentForm/>,
   },
   {
     path: "/account",
@@ -105,7 +112,14 @@ const router = createBrowserRouter([
     path: "/wishlist",
     element: <WishlistPage />,
   },
-
+{
+  path: "/pay-now/:orderId",
+  element: <PayNow />,
+},
+{
+  path: "/pay-confirmation/:orderId",
+  element: <PayConfirmation />,
+},
   {
     path: "/category/:categoryName",
     element: <CategoryPage />,

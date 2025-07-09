@@ -15,7 +15,21 @@ export default function BuyItems() {
   const [showFilter, setShowFilter] = useState(false);
 
   const handleOrder = (item) => {
-    navigate("/order", { state: { item } });
+    const tax = item.price * 0.13;
+    const delivery = 100;
+    const total = item.price + tax + delivery;
+
+    navigate("/checkout", {
+      state: {
+        product: item,
+        summary: {
+          basePrice: item.price,
+          taxAmount: tax,
+          deliveryCharge: delivery,
+          totalAmount: total,
+        },
+      },
+    });
   };
 
   const filteredItems = items.filter((item) =>
