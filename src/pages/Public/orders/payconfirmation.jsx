@@ -1,9 +1,9 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
 import { toast } from "react-toastify";
-import Navbar from "../../../components/Navbar/navbar";
 import Footer from "../../../components/Footer/footer";
+import Navbar from "../../../components/Navbar/navbar";
 
 const PayConfirmation = () => {
   const { orderId } = useParams();
@@ -50,7 +50,7 @@ const PayConfirmation = () => {
 
         <button
           className="mt-6 px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700"
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/dashboard")}
         >
           Go to Home
         </button>
